@@ -59,3 +59,22 @@ fun Canvas.drawMHASNode(i : Int, scale : Float, sc : Float, currI : Int, paint :
     drawMultipleHalfArcs(scale, sc, size, currI == i, paint)
     restore()
 }
+
+class ColorHalfArcScreenView(ctx : Context) : View(ctx) {
+
+    private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
+    override fun onDraw(canvas : Canvas) {
+
+    }
+
+    override fun onTouchEvent(event : MotionEvent) : Boolean {
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+
+            }
+        }
+        return true
+    }
+    
+}
