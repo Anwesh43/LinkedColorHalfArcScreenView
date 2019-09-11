@@ -168,4 +168,28 @@ class ColorHalfArcScreenView(ctx : Context) : View(ctx) {
             return this
         }
     }
+
+    data class ColorHalfArcScreen(var i : Int) {
+
+        private val root : CHASNode = CHASNode(0)
+        private var curr : CHASNode = root
+        private var dir : Int = 1
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            root.draw(canvas, 0f, curr.i, paint)
+        }
+
+        fun update(cb : (Float) -> Unit) {
+            curr.update {
+                curr = curr.getNext(dir) {
+                    dir *= -1
+                }
+                cb(it)
+            }
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            curr.startUpdating(cb)
+        }
+    }
 }
