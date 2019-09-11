@@ -46,7 +46,7 @@ fun Canvas.drawMultipleHalfArcs(sc1 : Float, sc2 : Float,  size : Float, shouldF
     }
 }
 
-fun Canvas.drawMHASNode(i : Int, scale : Float, sc : Float, currI : Int, paint : Paint) {
+fun Canvas.drawCHASNode(i : Int, scale : Float, sc : Float, currI : Int, paint : Paint) {
     val w : Float = width.toFloat()
     val h : Float = height.toFloat()
     val size : Float = w / (2 * arcs)
@@ -122,6 +122,50 @@ class ColorHalfArcScreenView(ctx : Context) : View(ctx) {
             if (animated) {
                 animated = false
             }
+        }
+    }
+
+    data class CHASNode(var i : Int, val state : State = State()) {
+
+        private var next : CHASNode? = null
+        private var prev : CHASNode? = null
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if (i < colors.size - 1) {
+                next = CHASNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun draw(canvas : Canvas, sc : Float, currI : Int, paint : Paint) {
+            canvas?.drawCHASNode(i, state.scale, sc, currI, paint)
+            if (state.scale > 0f) {
+                next?.draw(canvas, state.scale, currI, paint)
+            }
+        }
+
+        fun update(cb : (Float) -> Unit) {
+            state.update(cb)
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            state.startUpdating(cb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : CHASNode {
+            var curr : CHASNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
         }
     }
 }
