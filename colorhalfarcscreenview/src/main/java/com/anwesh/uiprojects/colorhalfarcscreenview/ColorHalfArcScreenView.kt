@@ -12,28 +12,30 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.util.Log
 
 val colors : Array<String> = arrayOf("#9C27B0", "#1565C0", "#FF6F00", "#00C853", "#f44336")
 val arcs : Int = 5
 val scGap : Float = 0.01f / 5
 val backColor : Int = Color.parseColor("#BDBDBD")
-val delay : Long = 20
+val delay : Long = 5
 val strokeFactor : Int = 25
 
 fun Int.inverse() : Float = 1f / this
 fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
-fun Float.divideScale(i : Int, n : Int) : Float = Math.max(n.inverse(), maxScale(i, n)) * n
+fun Float.divideScale(i : Int, n : Int) : Float = Math.min(n.inverse(), maxScale(i, n)) * n
 
 fun Canvas.drawHalfArc(i : Int, sc1 : Float, sc2 : Float, size : Float, shouldFill : Boolean, paint : Paint) {
     val sc1i : Float = sc1.divideScale(i, arcs)
     val sc2i : Float = sc2.divideScale(i, arcs)
     var sweepDeg : Float = 0f
     if (sc2i > 0f) {
-        sweepDeg = 180f * sc2
+        sweepDeg = 180f * sc2i
     }
     if (shouldFill) {
-        sweepDeg = 180f * (1 - sc1)
+        sweepDeg = 180f * (1 - sc1i)
     }
+    Log.d("sweepDeg", "$sweepDeg")
     save()
     translate(i * 2 * size + size, 0f)
     drawArc(RectF(-size, -size, size, size), 180f + 180f * sc1i, sweepDeg, false, paint)
@@ -50,6 +52,7 @@ fun Canvas.drawCHASNode(i : Int, scale : Float, sc : Float, currI : Int, paint :
     val w : Float = width.toFloat()
     val h : Float = height.toFloat()
     val size : Float = w / (2 * arcs)
+    Log.d("current node", "$i")
     paint.color = Color.parseColor(colors[i])
     paint.strokeCap = Paint.Cap.ROUND
     paint.strokeWidth = Math.min(w, h) / strokeFactor
@@ -177,7 +180,7 @@ class ColorHalfArcScreenView(ctx : Context) : View(ctx) {
         private var dir : Int = 1
 
         fun draw(canvas : Canvas, paint : Paint) {
-            root.draw(canvas, 0f, curr.i, paint)
+            curr.draw(canvas, 0f, curr.i, paint)
         }
 
         fun update(cb : (Float) -> Unit) {
