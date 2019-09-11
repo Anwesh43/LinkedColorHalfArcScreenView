@@ -192,4 +192,26 @@ class ColorHalfArcScreenView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : ColorHalfArcScreenView) {
+
+        private val animator : Animator = Animator(view)
+        private val chas : ColorHalfArcScreen = ColorHalfArcScreen(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            chas.draw(canvas, paint)
+            animator.animate {
+                chas.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            chas.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
