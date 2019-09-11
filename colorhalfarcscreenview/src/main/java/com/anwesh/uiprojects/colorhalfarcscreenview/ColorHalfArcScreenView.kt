@@ -19,3 +19,6 @@ val scGap : Float = 0.01f / 5
 val backColor : Int = Color.parseColor("#BDBDBD")
 val delay : Long = 20
 
+fun Int.inverse() : Float = 1f / this
+fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
+fun Float.divideScale(i : Int, n : Int) : Float = Math.max(n.inverse(), maxScale(i, n)) * n
