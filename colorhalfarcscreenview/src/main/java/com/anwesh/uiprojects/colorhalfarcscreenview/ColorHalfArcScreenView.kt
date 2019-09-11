@@ -215,4 +215,13 @@ class ColorHalfArcScreenView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : ColorHalfArcScreenView {
+            val view : ColorHalfArcScreenView = ColorHalfArcScreenView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
